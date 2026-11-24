@@ -25,3 +25,35 @@ export const TOOLS: Tool[] = [
   },
 ]
 
+// 把内部 Tool 转成 OpenAI Chat Completions 的 tools 参数格式
+export function toOpenAITools(): ChatCompletionTool[] {
+  return TOOLS.map((tool) => ({
+    type: 'function',
+    function: {
+      name: tool.name,
+      description: tool.description,
+      parameters: tool.parameters,
+    }
+  }))
+}
+
+/**
+ * 按名字执行工具。参数是模型生成的 JSON 字符串。
+ * 任何报错都作为「结果文本」返回给模型——让模型自己读错误（失败自检后续会实现，先在这里埋线）。
+ */
+export async function execTool(name: string, argsJson: string): Promise<string> {
+  const tool = TOOLS.find((t) => t.name == name);
+  if(!tool) return `未知工具：${name}`;
+  let args: Record<string, unknown> = {};
+  try {
+    args = argsJson ? JSON.parse(argsJson) : {};
+  } catch {
+    return `参数不是合法 JSON：${argsJson}`;
+  }
+
+  try {
+    return await tool.run(args);
+  } catch (err) {
+    return `工具执行失败：${(err as Error).message}`
+  }
+}
