@@ -44,6 +44,7 @@ export function toOpenAITools(): ChatCompletionTool[] {
 export async function execTool(name: string, argsJson: string): Promise<string> {
   const tool = TOOLS.find((t) => t.name == name);
   if(!tool) return `未知工具：${name}`;
+  
   let args: Record<string, unknown> = {};
   try {
     args = argsJson ? JSON.parse(argsJson) : {};

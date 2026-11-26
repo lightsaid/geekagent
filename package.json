@@ -1,7 +1,7 @@
 {
   "name": "geekagent",
   "version": "1.0.0",
-  "description": "测试执行命令npm run dev -- dayN/index.ts",
+  "description": "测试执行命令 npm run dev -- dayN/index.ts",
   "main": "index.js",
   "scripts": {
     "dev": "tsx"

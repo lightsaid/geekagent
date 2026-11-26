@@ -49,7 +49,7 @@ r1.on('line', async (raw) => {
         
         // 把问题文本丢给模型，然后通过生成器流式接受模型返回内容
         for await (const delta of chat.streamReply(line)) {
-          out('model', delta);
+          out(delta.startsWith('\n[调用工具') ? 'tool' : 'model', delta);
         }
 
         // 回答完毕，换行
